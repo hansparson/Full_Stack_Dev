@@ -13,8 +13,7 @@ from flask.cli import with_appcontext
 from models.register_tables import (register_tables)
 
 from blueprints.users import users_bp
-# from blueprints.notification import notif_bp
-# from blueprints.internal_service import internal
+from blueprints.product import product_bp
 
 
 def create_app():
@@ -62,6 +61,7 @@ def register_shellcontext(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(users_bp)
+    app.register_blueprint(product_bp)
     return None
 
 def shells_imported_class():

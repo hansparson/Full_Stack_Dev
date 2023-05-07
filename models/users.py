@@ -30,6 +30,7 @@ class Users(PkModel):
         except Exception as e:
             print(e)
             db.session.rollback()
+            return None
         return self
     
     def create(cls, **kwargs):

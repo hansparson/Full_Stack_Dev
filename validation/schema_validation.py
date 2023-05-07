@@ -17,3 +17,8 @@ class CreateNewUser(Schema):
 class LoginUser(Schema):
     username = fields.Str(required=True)
     password = fields.Str(required=True)
+    
+class AddProducts(Schema):
+    item_name = fields.Str(required=True)
+    quantity = fields.Int(required=True)
+    description = fields.Str(required=True)

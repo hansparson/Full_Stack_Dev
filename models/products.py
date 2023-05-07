@@ -6,7 +6,7 @@ class Products(PkModel):
     __tablename__ = "products"
     
     item_id = Column(db.String(), nullable=True, default='', unique=True)
-    item_name = Column(db.String(), nullable=True, default='')
+    item_name = Column(db.String(), nullable=True, default='', unique=True)
     quantity = Column(db.Integer(), default=0)
     description = Column(db.String(), nullable=True, default='')
 
@@ -27,6 +27,7 @@ class Products(PkModel):
         except Exception as e:
             print(e)
             db.session.rollback()
+            return None
         return self
     
     def create(cls, **kwargs):
@@ -48,3 +49,34 @@ class Products(PkModel):
         """Represent instance as a unique string."""
         return f"{self.id}"
 
+class db_product_query(object):
+    @staticmethod
+    def get_product_item_name(item_name):
+        product = Products.query.filter(Products.item_name == item_name).first()
+        return product
+    
+    @staticmethod
+    def get_all_item():
+        product = Products.query.all()
+        return product
+    
+    @staticmethod
+    def get_product_item_id(item_id):
+        product = Products.query.filter(Products.item_id == item_id).first()
+        return product
+    
+    @staticmethod
+    def update_product(kwargs):
+        product = Products.query.filter(
+            Products.item_name == kwargs['item_query_name']
+            ).first().update(
+                item_name=kwargs['item_name'],
+                quantity=kwargs['quantity'],
+                description=kwargs['description']
+            )
+        return product
+    
+    @staticmethod
+    def delete_product(item_name):
+        product = Products.query.filter(Products.item_name == item_name).first().delete()
+        return product

@@ -47,8 +47,21 @@ class UserServices(object):
             type_user = self.payload['type_user']
         )
         # Save order data to database
-        Users(**data_user).save()
-        return {"success":"yeah"}, 200
+        add_user = Users(**data_user).save()
+        if add_user == None:
+            response = ErrorResponse.DUPLICATE_USERNAME
+            return response, 400
+        
+        response = {
+                "response_code": "SUCCESS",
+                "response_title": "create new user successful",
+                "response_data": {
+                    "username": self.payload['username'],
+                    "type_user": self.payload['type_user']
+                }
+            }
+        
+        return response, 200
     
     def login_users(self):
         try:
@@ -73,13 +86,18 @@ class UserServices(object):
         
         #validate Password
         user_password = Authentification.hashing_password(self.payload['username'], self.payload['password'])
-        generate_password = Authentification.hashing_password(self.payload['username'], user.password)
-        print(user_password)
-        print(generate_password)
-        if generate_password != user_password:
+        if user_password != user.password:
             return {'message': 'Invalid username or password'}, 401
         
         # Generate Token
-        token = Authentification.generate_token(self.payload['username'], user.type_user)
+        token = Authentification.generate_token(self, self.payload['username'], user.type_user)
         
-        return {'token': token}, 200
+        response = {
+                "response_code": "SUCCESS",
+                "response_title": "login successful",
+                "response_data": {
+                    "token": token
+                }
+            }
+        
+        return response, 200
